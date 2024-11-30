@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package http.class;
+
+import "google/api/annotations.proto";
+
+option go_package = "wuzigoweb/api/http/class;class";
+
+service Class {
+  // 创建班级
+  rpc CreateClass (CreateClassRequest) returns (CreateClassReply) {
+    option (google.api.http) = {
+      post: "/v1/class/create",
+      body: '*',
+    };
+  }
+
+  // 获取班级信息
+
+}
+
+// 创建班级
+message CreateClassRequest {
+  string name = 1;
+}
+
+message CreateClassReply {
+  int64 id = 1;
+}
+
+// 获取班级信息

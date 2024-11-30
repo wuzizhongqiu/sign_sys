@@ -31,6 +31,7 @@ func newClass(db *gorm.DB, opts ...gen.DOOption) class {
 	_class.CreateTime = field.NewTime(tableName, "create_time")
 	_class.UpdateTime = field.NewTime(tableName, "update_time")
 	_class.DeleteAt = field.NewTime(tableName, "delete_at")
+	_class.ClassName = field.NewString(tableName, "class_name")
 	_class.Student = field.NewString(tableName, "student")
 	_class.Teacher = field.NewString(tableName, "teacher")
 
@@ -48,6 +49,7 @@ type class struct {
 	CreateTime field.Time   // 创建时间
 	UpdateTime field.Time   // 更新时间
 	DeleteAt   field.Time   // 逻辑删除标记
+	ClassName  field.String // 班级名称
 	Student    field.String // 学生列表（json 数组）
 	Teacher    field.String // 授课老师
 
@@ -70,6 +72,7 @@ func (c *class) updateTableName(table string) *class {
 	c.CreateTime = field.NewTime(table, "create_time")
 	c.UpdateTime = field.NewTime(table, "update_time")
 	c.DeleteAt = field.NewTime(table, "delete_at")
+	c.ClassName = field.NewString(table, "class_name")
 	c.Student = field.NewString(table, "student")
 	c.Teacher = field.NewString(table, "teacher")
 
@@ -96,11 +99,12 @@ func (c *class) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (c *class) fillFieldMap() {
-	c.fieldMap = make(map[string]field.Expr, 6)
+	c.fieldMap = make(map[string]field.Expr, 7)
 	c.fieldMap["id"] = c.ID
 	c.fieldMap["create_time"] = c.CreateTime
 	c.fieldMap["update_time"] = c.UpdateTime
 	c.fieldMap["delete_at"] = c.DeleteAt
+	c.fieldMap["class_name"] = c.ClassName
 	c.fieldMap["student"] = c.Student
 	c.fieldMap["teacher"] = c.Teacher
 }

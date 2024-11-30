@@ -14,7 +14,9 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/handlers"
 
+	v2 "wuzigoweb/api/http/class"
 	v1 "wuzigoweb/api/http/user"
+
 	"wuzigoweb/internal/conf"
 	"wuzigoweb/internal/service"
 )
@@ -103,6 +105,7 @@ func MiddlewareJWTAdmin() middleware.Middleware {
 // NewHTTPServer new an HTTP server.
 func NewHTTPServer(c *conf.Server,
 	user *service.UserService,
+	class *service.ClassService,
 	logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
@@ -138,7 +141,8 @@ func NewHTTPServer(c *conf.Server,
 
 	srv := http.NewServer(opts...)
 
-	v1.RegisterUserHTTPServer(srv, user) // 注册 user 的服务
+	v1.RegisterUserHTTPServer(srv, user)   // 注册 user 的服务
+	v2.RegisterClassHTTPServer(srv, class) // 注册 class 的服务
 
 	return srv
 }
