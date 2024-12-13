@@ -8,6 +8,7 @@ import (
 
 type ClassRepo interface {
 	Save(context.Context, *model.Class) (int64, error)
+	GetByName(context.Context, *model.Class) (*model.Class, error)
 
 	//Update(context.Context, *Greeter) (*Greeter, errcode)
 	//FindByID(context.Context, int64) (*Greeter, errcode)
@@ -27,4 +28,9 @@ func NewClassUsecase(repo ClassRepo, logger log.Logger) *ClassUsecase {
 func (uc *ClassUsecase) CreateClass(ctx context.Context, class *model.Class) (int64, error) {
 	uc.log.WithContext(ctx).Debugf("biz: 正在执行 CreateClass 创建班级操作")
 	return uc.repo.Save(ctx, class)
+}
+
+func (uc *ClassUsecase) GetClassByName(ctx context.Context, class *model.Class) (*model.Class, error) {
+	uc.log.WithContext(ctx).Debugf("biz: 正在执行 GetClassByName 获取班级操作")
+	return uc.repo.GetByName(ctx, class)
 }

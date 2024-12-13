@@ -20,15 +20,19 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 const OperationClassCreateClass = "/http.class.Class/CreateClass"
+const OperationClassGetClassByName = "/http.class.Class/GetClassByName"
 
 type ClassHTTPServer interface {
 	// CreateClass 创建班级
 	CreateClass(context.Context, *CreateClassRequest) (*CreateClassReply, error)
+	// GetClassByName 根据名字获取班级信息
+	GetClassByName(context.Context, *GetClassByNameRequest) (*GetClassByNameReply, error)
 }
 
 func RegisterClassHTTPServer(s *http.Server, srv ClassHTTPServer) {
 	r := s.Route("/")
 	r.POST("/v1/class/create", _Class_CreateClass0_HTTP_Handler(srv))
+	r.POST("/v1/class/get_by_name", _Class_GetClassByName0_HTTP_Handler(srv))
 }
 
 func _Class_CreateClass0_HTTP_Handler(srv ClassHTTPServer) func(ctx http.Context) error {
@@ -53,8 +57,31 @@ func _Class_CreateClass0_HTTP_Handler(srv ClassHTTPServer) func(ctx http.Context
 	}
 }
 
+func _Class_GetClassByName0_HTTP_Handler(srv ClassHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetClassByNameRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationClassGetClassByName)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetClassByName(ctx, req.(*GetClassByNameRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetClassByNameReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type ClassHTTPClient interface {
 	CreateClass(ctx context.Context, req *CreateClassRequest, opts ...http.CallOption) (rsp *CreateClassReply, err error)
+	GetClassByName(ctx context.Context, req *GetClassByNameRequest, opts ...http.CallOption) (rsp *GetClassByNameReply, err error)
 }
 
 type ClassHTTPClientImpl struct {
@@ -70,6 +97,19 @@ func (c *ClassHTTPClientImpl) CreateClass(ctx context.Context, in *CreateClassRe
 	pattern := "/v1/class/create"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationClassCreateClass))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ClassHTTPClientImpl) GetClassByName(ctx context.Context, in *GetClassByNameRequest, opts ...http.CallOption) (*GetClassByNameReply, error) {
+	var out GetClassByNameReply
+	pattern := "/v1/class/get_by_name"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationClassGetClassByName))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

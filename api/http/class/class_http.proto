@@ -15,8 +15,13 @@ service Class {
     };
   }
 
-  // 获取班级信息
-
+  // 根据名字获取班级信息
+  rpc GetClassByName (GetClassByNameRequest) returns (GetClassByNameReply) {
+    option (google.api.http) = {
+      post: "/v1/class/get_by_name",
+      body: '*'
+    };
+  }
 }
 
 // 创建班级
@@ -29,3 +34,12 @@ message CreateClassReply {
 }
 
 // 获取班级信息
+message GetClassByNameRequest {
+  string name = 1;
+}
+
+message GetClassByNameReply {
+  string name = 1;
+  string student = 2;
+  string teacher = 3;
+}

@@ -25,6 +25,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/http.class.CreateClassReply'
+    /v1/class/get_by_name:
+        post:
+            tags:
+                - Class
+            description: 根据名字获取班级信息
+            operationId: Class_GetClassByName
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/http.class.GetClassByNameRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http.class.GetClassByNameReply'
 components:
     schemas:
         http.class.CreateClassReply:
@@ -38,5 +57,20 @@ components:
                 name:
                     type: string
             description: 创建班级
+        http.class.GetClassByNameReply:
+            type: object
+            properties:
+                name:
+                    type: string
+                student:
+                    type: string
+                teacher:
+                    type: string
+        http.class.GetClassByNameRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+            description: 获取班级信息
 tags:
     - name: Class

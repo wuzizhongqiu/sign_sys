@@ -26,3 +26,14 @@ func (s *ClassService) CreateClass(ctx context.Context, req *pb.CreateClassReque
 	}
 	return &pb.CreateClassReply{Id: id}, nil
 }
+
+// GetClassByName 根据班级名称获取班级
+func (s *ClassService) GetClassByName(ctx context.Context, req *pb.GetClassByNameRequest) (*pb.GetClassByNameReply, error) {
+	class, err := s.uc.GetClassByName(ctx, &model.Class{
+		ClassName: req.Name,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.GetClassByNameReply{Name: class.ClassName, Student: class.Student, Teacher: class.Teacher}, nil
+}

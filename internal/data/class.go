@@ -34,3 +34,9 @@ func (r *classRepo) Save(ctx context.Context, class *model.Class) (int64, error)
 	}
 	return class.ID, nil
 }
+
+func (r *classRepo) GetByName(ctx context.Context, class *model.Class) (*model.Class, error) {
+	u := r.data.query.Class
+	classes, _ := u.WithContext(ctx).Where(u.ClassName.Eq(class.ClassName)).First()
+	return classes, nil
+}
