@@ -3,11 +3,14 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/golang-jwt/jwt/v5"
 	"wuzigoweb/api/http/errcode"
 	pb "wuzigoweb/api/http/user"
 	"wuzigoweb/internal/biz"
 	"wuzigoweb/internal/data/model"
+
+	"github.com/golang-jwt/jwt/v5"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type UserService struct {
@@ -130,4 +133,26 @@ func (s *UserService) ListUserByPage(ctx context.Context, req *pb.ListUserByPage
 		UserList: userList,
 		Total:    int32(total),
 	}, nil
+}
+
+// 学生签到
+func (s *UserService) StudentSign(ctx context.Context, req *pb.StudentSignRequest) (*pb.StudentSignReply, error) {
+
+	if req.Name == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "学生姓名不能为空")
+	}
+	// biz 层
+	err := s.uc.StudentSign(ctx, req.Id, req.Name)
+	if err != nil {
+		switch err.Error() {
+		case "学生已签到":
+			return &pb.StudentSignReply{Id: req.Id}, nil // 已签到，直接返回成功
+		case "学生不在应签到名单中，无需签到":
+			return nil, status.Errorf(codes.InvalidArgument, "学生不在应签到名单中，无需签到")
+		default:
+			return nil, status.Errorf(codes.Internal, "签到失败: %v", err)
+		}
+	}
+
+	return &pb.StudentSignReply{Id: req.Id}, nil
 }

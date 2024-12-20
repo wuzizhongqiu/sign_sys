@@ -3,20 +3,19 @@
 
 openapi: 3.0.3
 info:
-    title: Class API
+    title: User API
     version: 0.0.1
 paths:
-    /v1/class/create:
+    /v1/user/getuser:
         post:
             tags:
-                - Class
-            description: 创建班级
-            operationId: Class_CreateClass
+                - User
+            operationId: User_GetCurrentUser
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/http.class.CreateClassRequest'
+                            $ref: '#/components/schemas/http.user.GetCurrentUserRequest'
                 required: true
             responses:
                 "200":
@@ -24,18 +23,17 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/http.class.CreateClassReply'
-    /v1/class/get_by_name:
+                                $ref: '#/components/schemas/http.user.GetCurrentUserReply'
+    /v1/user/list:
         post:
             tags:
-                - Class
-            description: 根据名字获取班级信息
-            operationId: Class_GetClassByName
+                - User
+            operationId: User_List
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/http.class.GetClassByNameRequest'
+                            $ref: '#/components/schemas/http.user.ListRequest'
                 required: true
             responses:
                 "200":
@@ -43,34 +41,211 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/http.class.GetClassByNameReply'
+                                $ref: '#/components/schemas/http.user.ListReply'
+    /v1/user/listbypage:
+        post:
+            tags:
+                - User
+            operationId: User_ListUserByPage
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/http.user.ListUserByPageRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http.user.ListUserByPageReply'
+    /v1/user/login:
+        post:
+            tags:
+                - User
+            description: 用户端登录
+            operationId: User_Login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/http.user.LoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http.user.LoginReply'
+    /v1/user/register:
+        post:
+            tags:
+                - User
+            description: 用户注册
+            operationId: User_Register
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/http.user.RegisterRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http.user.RegisterReply'
+    /v1/user/studentsign:
+        post:
+            tags:
+                - User
+            description: 学生签到
+            operationId: User_StudentSign
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/http.user.StudentSignRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http.user.StudentSignReply'
 components:
     schemas:
-        http.class.CreateClassReply:
+        http.user.GetCurrentUserReply:
             type: object
             properties:
                 id:
                     type: string
-        http.class.CreateClassRequest:
+                account:
+                    type: string
+                password:
+                    type: string
+                username:
+                    type: string
+                avatarUrl:
+                    type: string
+                gender:
+                    type: integer
+                    format: int32
+                userInfo:
+                    type: string
+                userRole:
+                    type: integer
+                    format: int32
+        http.user.GetCurrentUserRequest:
+            type: object
+            properties: {}
+        http.user.ListReply:
             type: object
             properties:
-                name:
+                username:
                     type: string
-            description: 创建班级
-        http.class.GetClassByNameReply:
+                avatarUrl:
+                    type: string
+                userInfo:
+                    type: string
+        http.user.ListRequest:
             type: object
             properties:
-                name:
+                id:
                     type: string
-                student:
-                    type: string
-                teacher:
-                    type: string
-        http.class.GetClassByNameRequest:
+        http.user.ListUserByPageReply:
             type: object
             properties:
+                userList:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/http.user.UserInfo'
+                total:
+                    type: integer
+                    format: int32
+        http.user.ListUserByPageRequest:
+            type: object
+            properties:
+                current:
+                    type: integer
+                    format: int32
+                pageSize:
+                    type: integer
+                    format: int32
+        http.user.LoginReply:
+            type: object
+            properties:
+                id:
+                    type: string
+                token:
+                    type: string
+            description: 返回前端的请求
+        http.user.LoginRequest:
+            type: object
+            properties:
+                account:
+                    type: string
+                password:
+                    type: string
+            description: |-
+                Register 用户登录
+                 前端传来的请求
+        http.user.RegisterReply:
+            type: object
+            properties:
+                id:
+                    type: string
+            description: 返回前端的请求
+        http.user.RegisterRequest:
+            type: object
+            properties:
+                account:
+                    type: string
+                password:
+                    type: string
+                checkPassword:
+                    type: string
+            description: |-
+                Register 用户注册
+                 前端传来的请求
+        http.user.StudentSignReply:
+            type: object
+            properties:
+                id:
+                    type: string
+            description: 学生签到Response
+        http.user.StudentSignRequest:
+            type: object
+            properties:
+                id:
+                    type: string
                 name:
                     type: string
-            description: 获取班级信息
+            description: 学生签到Request
+        http.user.UserInfo:
+            type: object
+            properties:
+                id:
+                    type: string
+                account:
+                    type: string
+                password:
+                    type: string
+                username:
+                    type: string
+                avatarUrl:
+                    type: string
+                gender:
+                    type: integer
+                    format: int32
+                userInfo:
+                    type: string
+                userRole:
+                    type: integer
+                    format: int32
 tags:
-    - name: Class
+    - name: User

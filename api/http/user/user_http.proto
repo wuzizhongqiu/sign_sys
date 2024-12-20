@@ -43,6 +43,14 @@ service User {
       body: '*'
     };
   }
+
+  //学生签到
+  rpc StudentSign (StudentSignRequest) returns (StudentSignReply) {
+    option (google.api.http) = {
+      post: "/v1/user/studentsign",
+      body: '*'
+    };
+  }
 }
 
 // Register 用户注册
@@ -114,4 +122,15 @@ message UserInfo {
 message ListUserByPageReply {
   repeated UserInfo userList = 1;
   int32 total = 2;
+}
+
+//学生签到Request
+message StudentSignRequest {
+  int64 id = 1;
+  string name = 2;
+}
+
+//学生签到Response
+message StudentSignReply {
+  int64 id = 1;
 }
