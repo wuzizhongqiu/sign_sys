@@ -23,6 +23,7 @@ type User struct {
 	Gender     int32      `gorm:"column:gender;not null;default:1;comment:性别:1男;2女;3隐藏" json:"gender"`                   // 性别:1男;2女;3隐藏
 	UserInfo   string     `gorm:"column:user_info;not null;comment:个人简介" json:"user_info"`                               // 个人简介
 	UserRole   int32      `gorm:"column:user_role;not null;default:10;comment:身份:10学生;20教师;30封禁" json:"user_role"`       // 身份:10学生;20教师;30封禁
+	StudentID  string     `gorm:"column:student_id;not null;comment:学生学号" json:"student_id"`                             // 学生学号
 }
 
 // TableName User's table name

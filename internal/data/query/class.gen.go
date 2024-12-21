@@ -34,6 +34,8 @@ func newClass(db *gorm.DB, opts ...gen.DOOption) class {
 	_class.ClassName = field.NewString(tableName, "class_name")
 	_class.Student = field.NewString(tableName, "student")
 	_class.Teacher = field.NewString(tableName, "teacher")
+	_class.StudentAbsence = field.NewString(tableName, "student_absence")
+	_class.StudentAbsenceCount = field.NewInt32(tableName, "student_absence_count")
 
 	_class.fillFieldMap()
 
@@ -44,14 +46,16 @@ func newClass(db *gorm.DB, opts ...gen.DOOption) class {
 type class struct {
 	classDo classDo
 
-	ALL        field.Asterisk
-	ID         field.Int64  // 主键
-	CreateTime field.Time   // 创建时间
-	UpdateTime field.Time   // 更新时间
-	DeleteAt   field.Time   // 逻辑删除标记
-	ClassName  field.String // 班级名称
-	Student    field.String // 学生列表（json 数组）
-	Teacher    field.String // 授课老师
+	ALL                 field.Asterisk
+	ID                  field.Int64  // 主键
+	CreateTime          field.Time   // 创建时间
+	UpdateTime          field.Time   // 更新时间
+	DeleteAt            field.Time   // 逻辑删除标记
+	ClassName           field.String // 班级名称
+	Student             field.String // 学生列表（json 数组）
+	Teacher             field.String // 授课老师
+	StudentAbsence      field.String // 缺勤学生统计（json 数组）
+	StudentAbsenceCount field.Int32  // 缺勤次数
 
 	fieldMap map[string]field.Expr
 }
@@ -75,6 +79,8 @@ func (c *class) updateTableName(table string) *class {
 	c.ClassName = field.NewString(table, "class_name")
 	c.Student = field.NewString(table, "student")
 	c.Teacher = field.NewString(table, "teacher")
+	c.StudentAbsence = field.NewString(table, "student_absence")
+	c.StudentAbsenceCount = field.NewInt32(table, "student_absence_count")
 
 	c.fillFieldMap()
 
@@ -99,7 +105,7 @@ func (c *class) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (c *class) fillFieldMap() {
-	c.fieldMap = make(map[string]field.Expr, 7)
+	c.fieldMap = make(map[string]field.Expr, 9)
 	c.fieldMap["id"] = c.ID
 	c.fieldMap["create_time"] = c.CreateTime
 	c.fieldMap["update_time"] = c.UpdateTime
@@ -107,6 +113,8 @@ func (c *class) fillFieldMap() {
 	c.fieldMap["class_name"] = c.ClassName
 	c.fieldMap["student"] = c.Student
 	c.fieldMap["teacher"] = c.Teacher
+	c.fieldMap["student_absence"] = c.StudentAbsence
+	c.fieldMap["student_absence_count"] = c.StudentAbsenceCount
 }
 
 func (c class) clone(db *gorm.DB) class {

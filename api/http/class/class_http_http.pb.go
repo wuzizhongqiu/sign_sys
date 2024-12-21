@@ -20,19 +20,35 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 const OperationClassCreateClass = "/http.class.Class/CreateClass"
+const OperationClassGetAllClass = "/http.class.Class/GetAllClass"
 const OperationClassGetClassByName = "/http.class.Class/GetClassByName"
+const OperationClassJoinClass = "/http.class.Class/JoinClass"
+const OperationClassSetAttendance = "/http.class.Class/SetAttendance"
+const OperationClassStudentSignIn = "/http.class.Class/StudentSignIn"
 
 type ClassHTTPServer interface {
 	// CreateClass 创建班级
 	CreateClass(context.Context, *CreateClassRequest) (*CreateClassReply, error)
+	// GetAllClass 获取所有班级列表
+	GetAllClass(context.Context, *GetAllClassRequest) (*GetAllClassReply, error)
 	// GetClassByName 根据名字获取班级信息
 	GetClassByName(context.Context, *GetClassByNameRequest) (*GetClassByNameReply, error)
+	// JoinClass 加入班级
+	JoinClass(context.Context, *JoinClassRequest) (*JoinClassReply, error)
+	// SetAttendance 设置考勤
+	SetAttendance(context.Context, *SetAttendanceRequest) (*SetAttendanceReply, error)
+	// StudentSignIn 学生签到
+	StudentSignIn(context.Context, *StudentSignInRequest) (*StudentSignInReply, error)
 }
 
 func RegisterClassHTTPServer(s *http.Server, srv ClassHTTPServer) {
 	r := s.Route("/")
 	r.POST("/v1/class/create", _Class_CreateClass0_HTTP_Handler(srv))
 	r.POST("/v1/class/get_by_name", _Class_GetClassByName0_HTTP_Handler(srv))
+	r.POST("/v1/class/get_all", _Class_GetAllClass0_HTTP_Handler(srv))
+	r.POST("/v1/class/join", _Class_JoinClass0_HTTP_Handler(srv))
+	r.POST("/v1/class/set_attendance", _Class_SetAttendance0_HTTP_Handler(srv))
+	r.POST("/v1/class/student_sign_in", _Class_StudentSignIn0_HTTP_Handler(srv))
 }
 
 func _Class_CreateClass0_HTTP_Handler(srv ClassHTTPServer) func(ctx http.Context) error {
@@ -79,9 +95,101 @@ func _Class_GetClassByName0_HTTP_Handler(srv ClassHTTPServer) func(ctx http.Cont
 	}
 }
 
+func _Class_GetAllClass0_HTTP_Handler(srv ClassHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetAllClassRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationClassGetAllClass)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetAllClass(ctx, req.(*GetAllClassRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetAllClassReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Class_JoinClass0_HTTP_Handler(srv ClassHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in JoinClassRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationClassJoinClass)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.JoinClass(ctx, req.(*JoinClassRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*JoinClassReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Class_SetAttendance0_HTTP_Handler(srv ClassHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in SetAttendanceRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationClassSetAttendance)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.SetAttendance(ctx, req.(*SetAttendanceRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*SetAttendanceReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Class_StudentSignIn0_HTTP_Handler(srv ClassHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in StudentSignInRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationClassStudentSignIn)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.StudentSignIn(ctx, req.(*StudentSignInRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*StudentSignInReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type ClassHTTPClient interface {
 	CreateClass(ctx context.Context, req *CreateClassRequest, opts ...http.CallOption) (rsp *CreateClassReply, err error)
+	GetAllClass(ctx context.Context, req *GetAllClassRequest, opts ...http.CallOption) (rsp *GetAllClassReply, err error)
 	GetClassByName(ctx context.Context, req *GetClassByNameRequest, opts ...http.CallOption) (rsp *GetClassByNameReply, err error)
+	JoinClass(ctx context.Context, req *JoinClassRequest, opts ...http.CallOption) (rsp *JoinClassReply, err error)
+	SetAttendance(ctx context.Context, req *SetAttendanceRequest, opts ...http.CallOption) (rsp *SetAttendanceReply, err error)
+	StudentSignIn(ctx context.Context, req *StudentSignInRequest, opts ...http.CallOption) (rsp *StudentSignInReply, err error)
 }
 
 type ClassHTTPClientImpl struct {
@@ -105,11 +213,63 @@ func (c *ClassHTTPClientImpl) CreateClass(ctx context.Context, in *CreateClassRe
 	return &out, err
 }
 
+func (c *ClassHTTPClientImpl) GetAllClass(ctx context.Context, in *GetAllClassRequest, opts ...http.CallOption) (*GetAllClassReply, error) {
+	var out GetAllClassReply
+	pattern := "/v1/class/get_all"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationClassGetAllClass))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
 func (c *ClassHTTPClientImpl) GetClassByName(ctx context.Context, in *GetClassByNameRequest, opts ...http.CallOption) (*GetClassByNameReply, error) {
 	var out GetClassByNameReply
 	pattern := "/v1/class/get_by_name"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationClassGetClassByName))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ClassHTTPClientImpl) JoinClass(ctx context.Context, in *JoinClassRequest, opts ...http.CallOption) (*JoinClassReply, error) {
+	var out JoinClassReply
+	pattern := "/v1/class/join"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationClassJoinClass))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ClassHTTPClientImpl) SetAttendance(ctx context.Context, in *SetAttendanceRequest, opts ...http.CallOption) (*SetAttendanceReply, error) {
+	var out SetAttendanceReply
+	pattern := "/v1/class/set_attendance"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationClassSetAttendance))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ClassHTTPClientImpl) StudentSignIn(ctx context.Context, in *StudentSignInRequest, opts ...http.CallOption) (*StudentSignInReply, error) {
+	var out StudentSignInReply
+	pattern := "/v1/class/student_sign_in"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationClassStudentSignIn))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

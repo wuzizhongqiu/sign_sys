@@ -3,9 +3,123 @@
 
 openapi: 3.0.3
 info:
-    title: User API
+    title: ""
     version: 0.0.1
 paths:
+    /v1/class/create:
+        post:
+            tags:
+                - Class
+            description: 创建班级
+            operationId: Class_CreateClass
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/http.class.CreateClassRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http.class.CreateClassReply'
+    /v1/class/get_all:
+        post:
+            tags:
+                - Class
+            description: 获取所有班级列表
+            operationId: Class_GetAllClass
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/http.class.GetAllClassRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http.class.GetAllClassReply'
+    /v1/class/get_by_name:
+        post:
+            tags:
+                - Class
+            description: 根据名字获取班级信息
+            operationId: Class_GetClassByName
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/http.class.GetClassByNameRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http.class.GetClassByNameReply'
+    /v1/class/join:
+        post:
+            tags:
+                - Class
+            description: 加入班级
+            operationId: Class_JoinClass
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/http.class.JoinClassRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http.class.JoinClassReply'
+    /v1/class/set_attendance:
+        post:
+            tags:
+                - Class
+            description: 设置考勤
+            operationId: Class_SetAttendance
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/http.class.SetAttendanceRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http.class.SetAttendanceReply'
+    /v1/class/student_sign_in:
+        post:
+            tags:
+                - Class
+            description: 学生签到
+            operationId: Class_StudentSignIn
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/http.class.StudentSignInRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/http.class.StudentSignInReply'
     /v1/user/getuser:
         post:
             tags:
@@ -98,27 +212,85 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/http.user.RegisterReply'
-    /v1/user/studentsign:
-        post:
-            tags:
-                - User
-            description: 学生签到
-            operationId: User_StudentSign
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/http.user.StudentSignRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/http.user.StudentSignReply'
 components:
     schemas:
+        http.class.CreateClassReply:
+            type: object
+            properties:
+                id:
+                    type: string
+        http.class.CreateClassRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+            description: 创建班级
+        http.class.GetAllClassReply:
+            type: object
+            properties:
+                name:
+                    type: array
+                    items:
+                        type: string
+        http.class.GetAllClassRequest:
+            type: object
+            properties: {}
+            description: 获取所有班级列表
+        http.class.GetClassByNameReply:
+            type: object
+            properties:
+                name:
+                    type: string
+                student:
+                    type: string
+                teacher:
+                    type: string
+                studentAbsence:
+                    type: string
+                studentAbsenceCount:
+                    type: string
+        http.class.GetClassByNameRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+            description: 获取班级信息
+        http.class.JoinClassReply:
+            type: object
+            properties:
+                id:
+                    type: string
+        http.class.JoinClassRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+            description: 加入班级
+        http.class.SetAttendanceReply:
+            type: object
+            properties:
+                id:
+                    type: string
+        http.class.SetAttendanceRequest:
+            type: object
+            properties:
+                time:
+                    type: integer
+                    format: int32
+                attendName:
+                    type: string
+            description: 设置考勤
+        http.class.StudentSignInReply:
+            type: object
+            properties:
+                message:
+                    type: string
+        http.class.StudentSignInRequest:
+            type: object
+            properties:
+                attendName:
+                    type: string
+            description: 学生签到
         http.user.GetCurrentUserReply:
             type: object
             properties:
@@ -212,20 +384,6 @@ components:
             description: |-
                 Register 用户注册
                  前端传来的请求
-        http.user.StudentSignReply:
-            type: object
-            properties:
-                id:
-                    type: string
-            description: 学生签到Response
-        http.user.StudentSignRequest:
-            type: object
-            properties:
-                id:
-                    type: string
-                name:
-                    type: string
-            description: 学生签到Request
         http.user.UserInfo:
             type: object
             properties:
@@ -248,4 +406,5 @@ components:
                     type: integer
                     format: int32
 tags:
+    - name: Class
     - name: User

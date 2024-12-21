@@ -38,6 +38,7 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 	_user.Gender = field.NewInt32(tableName, "gender")
 	_user.UserInfo = field.NewString(tableName, "user_info")
 	_user.UserRole = field.NewInt32(tableName, "user_role")
+	_user.StudentID = field.NewString(tableName, "student_id")
 
 	_user.fillFieldMap()
 
@@ -60,6 +61,7 @@ type user struct {
 	Gender     field.Int32  // 性别:1男;2女;3隐藏
 	UserInfo   field.String // 个人简介
 	UserRole   field.Int32  // 身份:10学生;20教师;30封禁
+	StudentID  field.String // 学生学号
 
 	fieldMap map[string]field.Expr
 }
@@ -87,6 +89,7 @@ func (u *user) updateTableName(table string) *user {
 	u.Gender = field.NewInt32(table, "gender")
 	u.UserInfo = field.NewString(table, "user_info")
 	u.UserRole = field.NewInt32(table, "user_role")
+	u.StudentID = field.NewString(table, "student_id")
 
 	u.fillFieldMap()
 
@@ -111,7 +114,7 @@ func (u *user) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (u *user) fillFieldMap() {
-	u.fieldMap = make(map[string]field.Expr, 11)
+	u.fieldMap = make(map[string]field.Expr, 12)
 	u.fieldMap["id"] = u.ID
 	u.fieldMap["create_time"] = u.CreateTime
 	u.fieldMap["update_time"] = u.UpdateTime
@@ -123,6 +126,7 @@ func (u *user) fillFieldMap() {
 	u.fieldMap["gender"] = u.Gender
 	u.fieldMap["user_info"] = u.UserInfo
 	u.fieldMap["user_role"] = u.UserRole
+	u.fieldMap["student_id"] = u.StudentID
 }
 
 func (u user) clone(db *gorm.DB) user {

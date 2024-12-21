@@ -2,15 +2,11 @@ package data
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
 	"fmt"
-	"time"
 	"wuzigoweb/internal/biz"
 	"wuzigoweb/internal/data/model"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"gorm.io/gorm"
 )
 
 type userRepo struct {
@@ -84,44 +80,4 @@ func (r *userRepo) ListUserPage(ctx context.Context, current, pageSize int32) ([
 		return nil, 0, err
 	}
 	return users, int(count), nil
-}
-
-func (r *userRepo) GetSignByID(ctx context.Context, id int64) (*model.Sign, error) {
-	signQuery := r.data.query.Sign // 获取 Sign 表查询器
-	// 使用 Where 和 First 查询记录
-	sign, err := signQuery.WithContext(ctx).Where(signQuery.ID.Eq(id)).First()
-	if errors.Is(err, gorm.ErrRecordNotFound) { // 使用 gorm.ErrRecordNotFound 检查记录是否存在
-		return nil, errors.New("签到记录不存在")
-	}
-	return sign, err
-}
-
-func (r *userRepo) UpdateSign(ctx context.Context, sign *model.Sign) error {
-	signQuery := r.data.query.Sign // 获取 Sign 表查询器
-	sign.UpdateTime = time.Now()   // 更新最后修改时间
-	// 使用 Save 保存记录
-	err := signQuery.WithContext(ctx).Save(sign)
-	return err
-}
-
-func (r *userRepo) GetStudentList(ctx context.Context, signID int64) ([]string, error) {
-	signQuery := r.data.query.Sign // 获取 Sign 表查询器
-
-	// 查询指定签到记录
-	sign, err := signQuery.WithContext(ctx).Where(signQuery.ID.Eq(signID)).First()
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, errors.New("签到记录不存在")
-	}
-	if err != nil {
-		return nil, err // 其他查询错误
-	}
-
-	// 解析 JSON 格式的学生名单
-	var studentList []string
-	err = json.Unmarshal([]byte(sign.Student), &studentList)
-	if err != nil {
-		return nil, errors.New("解析学生名单失败")
-	}
-
-	return studentList, nil
 }

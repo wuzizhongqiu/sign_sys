@@ -22,6 +22,38 @@ service Class {
       body: '*'
     };
   }
+
+  // 获取所有班级列表
+  rpc GetAllClass (GetAllClassRequest) returns (GetAllClassReply) {
+    option (google.api.http) = {
+      post: "/v1/class/get_all",
+      body: '*'
+    };
+  }
+
+  // 加入班级
+  rpc JoinClass (JoinClassRequest) returns (JoinClassReply) {
+    option (google.api.http) = {
+      post: "/v1/class/join",
+      body: '*'
+    };
+  }
+
+  // 设置考勤
+  rpc SetAttendance (SetAttendanceRequest) returns (SetAttendanceReply) {
+    option (google.api.http) = {
+      post: "/v1/class/set_attendance",
+      body: '*'
+    };
+  }
+
+  // 学生签到
+  rpc StudentSignIn (StudentSignInRequest) returns (StudentSignInReply) {
+    option (google.api.http) = {
+      post: "/v1/class/student_sign_in",
+      body: '*'
+    };
+  }
 }
 
 // 创建班级
@@ -42,4 +74,43 @@ message GetClassByNameReply {
   string name = 1;
   string student = 2;
   string teacher = 3;
+
+  string student_absence = 4;
+  int64 student_absence_count = 5;
+}
+
+// 获取所有班级列表
+message GetAllClassRequest {
+}
+
+message GetAllClassReply {
+  repeated string name = 1;
+}
+
+// 加入班级
+message JoinClassRequest {
+  string name = 1;
+}
+
+message JoinClassReply {
+  int64 id = 1;
+}
+
+// 设置考勤
+message SetAttendanceRequest {
+  int32 time = 1;
+  string attend_name = 2;
+}
+
+message SetAttendanceReply {
+  int64 id = 1;
+}
+
+// 学生签到
+message StudentSignInRequest {
+  string attend_name = 1;
+}
+
+message StudentSignInReply {
+  string message = 1;
 }

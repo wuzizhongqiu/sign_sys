@@ -12,13 +12,15 @@ const TableNameClass = "class"
 
 // Class 班级表
 type Class struct {
-	ID         int64      `gorm:"column:id;primaryKey;autoIncrement:true;comment:主键" json:"id"`                          // 主键
-	CreateTime time.Time  `gorm:"column:create_time;not null;default:CURRENT_TIMESTAMP;comment:创建时间" json:"create_time"` // 创建时间
-	UpdateTime time.Time  `gorm:"column:update_time;not null;default:CURRENT_TIMESTAMP;comment:更新时间" json:"update_time"` // 更新时间
-	DeleteAt   *time.Time `gorm:"column:delete_at;comment:逻辑删除标记" json:"delete_at"`                                      // 逻辑删除标记
-	ClassName  string     `gorm:"column:class_name;not null;comment:班级名称" json:"class_name"`                             // 班级名称
-	Student    string     `gorm:"column:student;not null;comment:学生列表（json 数组）" json:"student"`                          // 学生列表（json 数组）
-	Teacher    string     `gorm:"column:teacher;not null;comment:授课老师" json:"teacher"`                                   // 授课老师
+	ID                  int64      `gorm:"column:id;primaryKey;autoIncrement:true;comment:主键" json:"id"`                          // 主键
+	CreateTime          time.Time  `gorm:"column:create_time;not null;default:CURRENT_TIMESTAMP;comment:创建时间" json:"create_time"` // 创建时间
+	UpdateTime          time.Time  `gorm:"column:update_time;not null;default:CURRENT_TIMESTAMP;comment:更新时间" json:"update_time"` // 更新时间
+	DeleteAt            *time.Time `gorm:"column:delete_at;comment:逻辑删除标记" json:"delete_at"`                                      // 逻辑删除标记
+	ClassName           string     `gorm:"column:class_name;not null;comment:班级名称" json:"class_name"`                             // 班级名称
+	Student             string     `gorm:"column:student;not null;comment:学生列表（json 数组）" json:"student"`                          // 学生列表（json 数组）
+	Teacher             string     `gorm:"column:teacher;not null;comment:授课老师" json:"teacher"`                                   // 授课老师
+	StudentAbsence      string     `gorm:"column:student_absence;not null;comment:缺勤学生统计（json 数组）" json:"student_absence"`        // 缺勤学生统计（json 数组）
+	StudentAbsenceCount int32      `gorm:"column:student_absence_count;not null;comment:缺勤次数" json:"student_absence_count"`       // 缺勤次数
 }
 
 // TableName Class's table name

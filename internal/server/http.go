@@ -116,6 +116,7 @@ func NewHTTPServer(c *conf.Server,
 			selector.Server( // 对非登录注册操作进行鉴权
 				MiddlewareJWTUser()).
 				Prefix("/http.post.Post/").
+				Prefix("/http.class.Class/").
 				Path("/http.user.User/List", "/http.user.User/GetCurrentUser").
 				Build(),
 		),

@@ -31,10 +31,8 @@ func newSign(db *gorm.DB, opts ...gen.DOOption) sign {
 	_sign.CreateTime = field.NewTime(tableName, "create_time")
 	_sign.UpdateTime = field.NewTime(tableName, "update_time")
 	_sign.DeleteAt = field.NewTime(tableName, "delete_at")
-	_sign.CourseName = field.NewString(tableName, "course_name")
+	_sign.AttendName = field.NewString(tableName, "attend_name")
 	_sign.SignTime = field.NewInt32(tableName, "sign_time")
-	_sign.Student = field.NewString(tableName, "student")
-	_sign.StudentSign = field.NewString(tableName, "student_sign")
 
 	_sign.fillFieldMap()
 
@@ -45,15 +43,13 @@ func newSign(db *gorm.DB, opts ...gen.DOOption) sign {
 type sign struct {
 	signDo signDo
 
-	ALL         field.Asterisk
-	ID          field.Int64  // 主键
-	CreateTime  field.Time   // 创建时间
-	UpdateTime  field.Time   // 更新时间
-	DeleteAt    field.Time   // 逻辑删除标记
-	CourseName  field.String // 课程名称
-	SignTime    field.Int32  // 签到限时
-	Student     field.String // 学生总表（json 数组）
-	StudentSign field.String // 已经签到的学生表（json 数组）
+	ALL        field.Asterisk
+	ID         field.Int64  // 主键
+	CreateTime field.Time   // 创建时间
+	UpdateTime field.Time   // 更新时间
+	DeleteAt   field.Time   // 逻辑删除标记
+	AttendName field.String // 签到
+	SignTime   field.Int32  // 签到限时
 
 	fieldMap map[string]field.Expr
 }
@@ -74,10 +70,8 @@ func (s *sign) updateTableName(table string) *sign {
 	s.CreateTime = field.NewTime(table, "create_time")
 	s.UpdateTime = field.NewTime(table, "update_time")
 	s.DeleteAt = field.NewTime(table, "delete_at")
-	s.CourseName = field.NewString(table, "course_name")
+	s.AttendName = field.NewString(table, "attend_name")
 	s.SignTime = field.NewInt32(table, "sign_time")
-	s.Student = field.NewString(table, "student")
-	s.StudentSign = field.NewString(table, "student_sign")
 
 	s.fillFieldMap()
 
@@ -102,15 +96,13 @@ func (s *sign) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (s *sign) fillFieldMap() {
-	s.fieldMap = make(map[string]field.Expr, 8)
+	s.fieldMap = make(map[string]field.Expr, 6)
 	s.fieldMap["id"] = s.ID
 	s.fieldMap["create_time"] = s.CreateTime
 	s.fieldMap["update_time"] = s.UpdateTime
 	s.fieldMap["delete_at"] = s.DeleteAt
-	s.fieldMap["course_name"] = s.CourseName
+	s.fieldMap["attend_name"] = s.AttendName
 	s.fieldMap["sign_time"] = s.SignTime
-	s.fieldMap["student"] = s.Student
-	s.fieldMap["student_sign"] = s.StudentSign
 }
 
 func (s sign) clone(db *gorm.DB) sign {
